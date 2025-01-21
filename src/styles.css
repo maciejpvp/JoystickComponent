@@ -1,0 +1,9 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+  touch-action: none;
+}
+
+body {
+  background-color: rgb(20, 20, 20);
+}
