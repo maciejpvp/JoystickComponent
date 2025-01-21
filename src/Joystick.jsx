@@ -41,7 +41,6 @@ export const Joystick = ({
   const isMouseDown = useRef(false);
 
   const handleMove = (clientX, clientY) => {
-    if (!isMouseDown.current) return;
     if (!containerRef.current) return;
 
     const rect = containerRef.current.getBoundingClientRect();
@@ -71,7 +70,8 @@ export const Joystick = ({
     }
   };
 
-  const handleMouseMove = (e) => handleMove(e.clientX, e.clientY);
+  const handleMouseMove = (e) =>
+    isMouseDown.current && handleMove(e.clientX, e.clientY);
   const handleTouchMove = (e) => {
     if (e.touches.length > 0) {
       handleMove(e.touches[0].clientX, e.touches[0].clientY);
@@ -84,13 +84,25 @@ export const Joystick = ({
     if (setJoystickPosition) {
       setJoystickPosition({ x: 0, y: 0 });
     }
+    if (onJoystickMove) {
+      onJoystickMove({ x: 0, y: 0 });
+    }
+  };
+
+  const handleStart = (e) => {
+    isMouseDown.current = true;
+    const clientX = e.clientX || e.touches?.[0]?.clientX;
+    const clientY = e.clientY || e.touches?.[0]?.clientY;
+    if (clientX && clientY) handleMove(clientX, clientY);
   };
 
   return (
     <Container
       ref={containerRef}
+      onMouseDown={handleStart}
       onMouseMove={handleMouseMove}
       onMouseUp={handleEnd}
+      onTouchStart={handleStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleEnd}
       $background={containerColor}
@@ -103,20 +115,6 @@ export const Joystick = ({
         style={{
           left: `${position.x * 75 + 75}px`,
           top: `${position.y * 75 + 75}px`,
-        }}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          isMouseDown.current = true;
-          document.addEventListener("mousemove", handleMouseMove);
-          document.addEventListener("mouseup", handleEnd, { once: true });
-        }}
-        onTouchStart={(e) => {
-          // e.preventDefault();
-          isMouseDown.current = true;
-          document.addEventListener("touchmove", handleTouchMove, {
-            passive: false,
-          });
-          document.addEventListener("touchend", handleEnd, { once: true });
         }}
       />
     </Container>

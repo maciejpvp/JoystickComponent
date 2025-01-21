@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { Joystick } from "./Joystick";
-import "./styles.css";
+import styled from "styled-components";
+
+const StyledApp = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  aligh-items: center;
+  text-align: center;
+`;
 
 export default function App() {
   const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 });
@@ -10,7 +18,7 @@ export default function App() {
   };
 
   return (
-    <div className="App">
+    <StyledApp>
       <h1>Joystick</h1>
       <p>X: {joystickPosition.x}</p>
       <p>Y: {joystickPosition.y}</p>
@@ -24,6 +32,6 @@ export default function App() {
         KnobOpacity={100}
         scale={1}
       />
-    </div>
+    </StyledApp>
   );
 }
